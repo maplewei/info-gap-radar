@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信息差雷达 - 每天发现一个赚钱信息差</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #12122a;
+            --bg-card: rgba(20, 20, 50, 0.6);
+            --accent-gold: #f0c040;
+            --accent-gold-light: #ffd700;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0c0;
+            --text-muted: #6b6b8a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Background Effects */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 92, 246, 0.3), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 50%, rgba(59, 130, 246, 0.15), transparent),
+                radial-gradient(ellipse 50% 30% at 10% 80%, rgba(240, 192, 64, 0.1), transparent);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 26, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-gold), var(--text-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav {
+            display: flex;
+            gap: 32px;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent-gold);
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--accent-gold), #d4a030);
+            color: var(--bg-primary) !important;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        .nav-cta:hover {
+            transform: scale(1.05);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0 80px;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--accent-gold);
+            margin-bottom: 32px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(240, 192, 64, 0.4); }
+            50% { box-shadow: 0 0 20px 5px rgba(240, 192, 64, 0.2); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-gold), #d4a030);
+            color: var(--bg-primary);
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 30px rgba(240, 192, 64, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 40px rgba(240, 192, 64, 0.4);
+        }
+
+        .hero-stats {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .hero-stats strong {
+            color: var(--accent-gold);
+        }
+
+        /* Info Gap Cards Section */
+        .preview-section {
+            padding: 80px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: var(--accent-purple);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(240, 192, 64, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .card-tag {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .card-tag.arbitrage { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+        .card-tag.traffic { background: linear-gradient(135deg, #10b981, #3b82f6); }
+        .card-tag.tool { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
+
+        .card-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.05);
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .card-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .card-content {
+            position: relative;
+        }
+
+        .card-content .free-content {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .blur-overlay {
+            position: relative;
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .blur-overlay .blur-text {
+            filter: blur(6px);
+            user-select: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .blur-overlay .locked-msg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--accent-gold), #d4a030);
+            color: var(--bg-primary);
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .blur-overlay .locked-msg:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+            box-shadow: 0 4px 20px rgba(240, 192, 64, 0.4);
+        }
+
+        .card-footer {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-earn {
+            color: var(--accent-gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .card-date {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 100px 0;
+            background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.05), transparent);
+        }
+
+        .pricing-card {
+            max-width: 480px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 2px solid rgba(240, 192, 64, 0.3);
+            border-radius: 30px;
+            padding: 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-purple), var(--accent-blue));
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: linear-gradient(135deg, var(--accent-gold), #ef4444);
+            color: white;
+            padding: 6px 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transform: rotate(45deg);
+        }
+
+        .pricing-price {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            line-height: 1;
+        }
+
+        .pricing-price span {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        .pricing-label {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 32px;
+        }
+
+        .pricing-features li {
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, rgba(240, 192, 64, 0.2), rgba(240, 192, 64, 0.1));
+            border-radius: 50%;
+            color: var(--accent-gold);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .btn-pricing {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Trust Section */
+        .trust-section {
+            padding: 100px 0;
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+
+        .trust-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .trust-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .trust-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .trust-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 80px 0;
+        }
+
+        .faq-list {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px 24px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .faq-question:hover {
+            color: var(--accent-gold);
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 24px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 24px 20px;
+            max-height: 200px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0 30px;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+        }
+
+        .footer-content {
+            margin-bottom: 30px;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .footer-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            max-width: 420px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--glass-bg);
+            border-radius: 50%;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .modal h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .modal-price {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            margin-bottom: 24px;
+        }
+
+        .modal-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .modal-section h4 {
+            color: var(--accent-gold);
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .modal-section p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .modal-email {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .modal-email strong {
+            color: var(--accent-purple);
+            font-size: 1.1rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card {
+                padding: 32px 24px;
+            }
+
+            .modal {
+                padding: 24px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">📡</div>
+                <span class="logo-text">信息差雷达</span>
+            </div>
+            <nav>
+                <a href="#preview">今日预览</a>
+                <a href="#pricing">解锁全部</a>
+                <a href="#faq">常见问题</a>
+                <a href="#pricing" class="nav-cta">立即加入</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span>🔥</span>
+                    <span>每日更新 · 永久有效</span>
+                </div>
+                <h1>每天1条信息差<br><span>一年365个赚钱机会</span></h1>
+                <p class="hero-subtitle">信息差就是利润。我们帮你找到它。</p>
+                <div class="hero-cta-group">
+                    <a href="#pricing" class="btn-primary">
+                        <span>¥19.9 解锁全部</span>
+                        <span>→</span>
+                    </a>
+                    <p class="hero-stats">已有 <strong>2,847</strong> 人加入信息差雷达</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Preview Section -->
+    <section class="preview-section" id="preview">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">今日免费预览</span>
+                <h2 class="section-title">先看三条，值不值你说了算</h2>
+                <p class="section-subtitle">点击解锁按钮可直接购买完整版</p>
+            </div>
+
+            <div class="cards-grid">
+                <!-- Card 1 -->
+                <div class="info-card animate-in delay-1">
+                    <span class="card-number">01</span>
+                    <div class="card-header">
+                        <span class="card-tag arbitrage">套利</span>
+                    </div>
+                    <h3 class="card-title">闲鱼同款差价套利：拼多多9.9 → 闲鱼29.9</h3>
+                    <p class="card-desc">中间商赚差价实操指南，小白可直接复制</p>
+                    <div class="card-content">
+                        <div class="free-content">
+                            <strong>核心逻辑：</strong>利用信息不对称，同款商品在不同平台的价格差异<br><br>
+                            <strong>免费部分 - 操作步骤：</strong><br>
+                            1. 打开拼多多搜索"创意小摆件"，按销量排序<br>
+                            2. 选择9.9元左右的小商品<br>
+                            3. 在闲鱼搜索同款，确认有差价空间
+                        </div>
+                        <div class="blur-overlay" onclick="openModal()">
+                            <div class="blur-text">
+                                4. 在拼多多下单，发货地址填买家信息<br>
+                                5. 闲鱼加价15-20元上架<br>
+                                6. 客户下单后，拼多多发货给客户<br><br>
+                                <strong>关键技巧：</strong>选择轻小件降低物流成本，选择有差异化的产品避免比价
+                            </div>
+                            <span class="locked-msg">🔒 解锁完整SOP + 工具</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-earn">💰 预估利润: 15-20元/单</span>
+                        <span class="card-date">今日更新</span>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="info-card animate-in delay-2">
+                    <span class="card-number">02</span>
+                    <div class="card-header">
+                        <span class="card-tag traffic">流量红利</span>
+                    </div>
+                    <h3 class="card-title">小红书AI绘画账号：零基础3天起号</h3>
+                    <p class="card-desc">一条笔记爆了，商单报价500+的完整流程</p>
+                    <div class="card-content">
+                        <div class="free-content">
+                            <strong>平台红利：</strong>小红书对AI内容有流量扶持，新账号起步快<br><br>
+                            <strong>免费部分 - 快速起号：</strong><br>
+                            1. 注册新号，简介写"AI绘画 | 定制头像"<br>
+                            2. 每天发布2-3张AI生成的图片<br>
+                            3. 使用小红书官方AI工具免费生成
+                        </div>
+                        <div class="blur-overlay" onclick="openModal()">
+                            <div class="blur-text">
+                                4. 爆款话题：#AI头像 #治愈系插画 #情侣头像<br>
+                                5. 粉丝1000后开放商变现<br>
+                                6. 单张商单报价200-500元<br><br>
+                                <strong>进阶玩法：</strong>接定制头像单，一单50-150元，日接3-5单
+                            </div>
+                            <span class="locked-msg">🔒 解锁完整起号攻略</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-earn">💰 预估月收入: 3000-8000元</span>
+                        <span class="card-date">今日更新</span>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="info-card animate-in delay-3">
+                    <span class="card-number">03</span>
+                    <div class="card-header">
+                        <span class="card-tag tool">工具变现</span>
+                    </div>
+                    <h3 class="card-title">抖音小程序推广：一条视频变现7000+</h3>
+                    <p class="card-desc">附完整操作流程，小白可复制</p>
+                    <div class="card-content">
+                        <div class="free-content">
+                            <strong>项目原理：</strong>抖音小程序分佣计划，播放量变现<br><br>
+                            <strong>免费部分 - 入门准备：</strong><br>
+                            1. 注册抖音账号并开通创作者中心<br>
+                            2. 申请加入小程序推广计划<br>
+                            3. 准备混剪视频素材来源
+                        </div>
+                        <div class="blur-overlay" onclick="openModal()">
+                            <div class="blur-text">
+                                4. 选择高转化小程序：测试类、心理类、游戏类<br>
+                                5. 制作15-30秒诱惑性视频开头<br>
+                                6. 视频尾部引导点击"查看答案"<br>
+                                7. 单条爆款视频可带来7000+收益<br><br>
+                                <strong>工具包：</strong>附赠视频剪辑模板 + 高转化小程序名单
+                            </div>
+                            <span class="locked-msg">🔒 解锁完整教程 + 工具包</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-earn">💰 单条最高: 7000+元</span>
+                        <span class="card-date">今日更新</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing-section" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">限时特惠</span>
+                <h2 class="section-title">一杯咖啡的价格，换一年的赚钱机会</h2>
+                <p class="section-subtitle">一次付费，永久更新</p>
+            </div>
+
+            <div class="pricing-card">
+                <div class="pricing-badge">最受欢迎</div>
+                <div class="pricing-price">¥19.9 <span>/ 终身</span></div>
+                <p class="pricing-label">相当于每天不到6分钱</p>
+
+                <ul class="pricing-features">
+                    <li>每日1条深度信息差（含完整SOP）</li>
+                    <li>配套自动化工具/脚本</li>
+                    <li>行业数据源列表</li>
+                    <li>精选赚钱案例拆解</li>
+                    <li>永久更新，持续进化</li>
+                </ul>
+
+                <button class="btn-primary btn-pricing" onclick="openModal()">
+                    <span>立即解锁全部</span>
+                    <span>→</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="trust-section" id="trust">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">为什么信息差能赚钱</span>
+                <h2 class="section-title">认知差就是利润差</h2>
+            </div>
+
+            <div class="trust-grid">
+                <div class="trust-card">
+                    <div class="trust-icon">💡</div>
+                    <h3>你知道，他不知道</h3>
+                    <p>同样的信息，你看到了赚钱机会，别人只当新闻看</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">⏰</div>
+                    <h3>你先知道，后来者买单</h3>
+                    <p>信息差存在窗口期，早入场的人收割红利</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">🔧</div>
+                    <h3>知道 + 执行 = 赚钱</h3>
+                    <p>我们不仅告诉你机会，还给你具体操作步骤</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">常见问题</span>
+                <h2 class="section-title">有任何疑问？看这里</h2>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item active">
+                    <div class="faq-question">信息差是什么？</div>
+                    <div class="faq-answer">
+                        信息差就是你知道而别人不知道的信息。在商业世界里，信息差等于利润。比如你知道某个平台的新政策会带动某类商品涨价，提前布局就能赚钱。
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">这些项目真实有效吗？</div>
+                    <div class="faq-answer">
+                        我们只推荐经过验证的真实项目。每条信息差都包含具体操作步骤，小白可以直接执行。效果因人而异，但只要你认真执行，一定会有收获。
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">付费后能获得什么？</div>
+                    <div class="faq-answer">
+                        付费后你将获得：每日深度信息差（带完整SOP）、配套工具/脚本、数据源列表、精选案例拆解，以及后续所有更新。
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">如何获取每日更新？</div>
+                    <div class="faq-answer">
+                        付费后联系我们邮箱，提供支付截图，我们会邀请你进入专属群组，每日更新会第一时间在群内发布。
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">支付安全吗？</div>
+                    <div class="faq-answer">
+                        我们支持微信和支付宝转账。支付后请截图发送至邮箱确认，24小时内会有人联系你。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">📡 信息差雷达</div>
+                <p class="footer-desc">每天发现一个赚钱信息差</p>
+            </div>
+            <p class="footer-bottom">© 2026 信息差雷达. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Payment Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <h2>解锁完整版</h2>
+            <div class="modal-price">¥19.9</div>
+
+            <div class="modal-section">
+                <h4>💳 支付方式</h4>
+                <p>微信支付 / 支付宝转账</p>
+            </div>
+
+            <div class="modal-section">
+                <h4>📝 支付后操作</h4>
+                <p>支付完成后，请发送截图至邮箱，备注您的联系方式</p>
+            </div>
+
+            <div class="modal-email">
+                <p>📧 邮箱地址</p>
+                <strong>maplewei155@163.com</strong>
+            </div>
+
+            <button class="btn-primary" style="margin-top: 24px; width: 100%;" onclick="closeModal()">
+                关闭
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Modal Functions
+        function openModal() {
+            document.getElementById('modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on overlay click
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                const wasActive = item.classList.contains('active');
+                
+                // Close all items
+                document.querySelectorAll('.faq-item').forEach(faq => {
+                    faq.classList.remove('active');
+                });
+                
+                // Toggle current item
+                if (!wasActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Scroll Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.info-card, .trust-card, .pricing-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
